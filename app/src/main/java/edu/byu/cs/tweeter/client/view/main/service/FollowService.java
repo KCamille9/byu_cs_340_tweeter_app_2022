@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -13,12 +12,13 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import edu.byu.cs.tweeter.client.backgroundTask.FollowTask;
-import edu.byu.cs.tweeter.client.backgroundTask.GetFollowersCountTask;
-import edu.byu.cs.tweeter.client.backgroundTask.GetFollowersTask;
-import edu.byu.cs.tweeter.client.backgroundTask.GetFollowingCountTask;
-import edu.byu.cs.tweeter.client.backgroundTask.IsFollowerTask;
-import edu.byu.cs.tweeter.client.backgroundTask.UnfollowTask;
+import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.FollowTask;
+import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.CountTasks.GetFollowersCountTask;
+import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.PagedTasks.GetFollowersTask;
+import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.CountTasks.GetFollowingCountTask;
+import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.IsFollowerTask;
+import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.PagedTasks.PagedTask;
+import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.UnfollowTask;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.util.FakeData;
@@ -214,7 +214,7 @@ public class FollowService {
 
             boolean success = msg.getData().getBoolean(GetFollowersTask.SUCCESS_KEY);
             if (success) {
-                List<User> followers = (List<User>) msg.getData().getSerializable(GetFollowersTask.FOLLOWERS_KEY);
+                List<User> followers = (List<User>) msg.getData().getSerializable(PagedTask.ITEMS_KEY);
                 boolean hasMorePages = msg.getData().getBoolean(GetFollowersTask.MORE_PAGES_KEY);
                 observer.handleSuccess(followers, hasMorePages);
             } else if (msg.getData().containsKey(GetFollowersTask.MESSAGE_KEY)) {
@@ -419,18 +419,23 @@ public class FollowService {
         }
 
         @Override
-        protected void runTask() {
-            try {
-                Pair<List<User>, Boolean> pageOfUsers = getFollowees();
-                this.followees = pageOfUsers.getFirst();
-                this.hasMorePages = pageOfUsers.getSecond();
+        protected void processTask() {
 
-                sendSuccessMessage();
-            }
-            catch (Exception ex) {
-                Log.e(LOG_TAG, "Failed to get followees", ex);
-                sendExceptionMessage(ex);
-            }
+            Pair<List<User>, Boolean> pageOfUsers = getFollowees();
+            this.followees = pageOfUsers.getFirst();
+            this.hasMorePages = pageOfUsers.getSecond();
+
+//            try {
+//                Pair<List<User>, Boolean> pageOfUsers = getFollowees();
+//                this.followees = pageOfUsers.getFirst();
+//                this.hasMorePages = pageOfUsers.getSecond();
+//
+//                sendSuccessMessage();
+//            }
+//            catch (Exception ex) {
+//                Log.e(LOG_TAG, "Failed to get followees", ex);
+//                sendExceptionMessage(ex);
+//            }
         }
 
         // This method is public so it can be accessed by test cases

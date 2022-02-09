@@ -4,16 +4,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import edu.byu.cs.tweeter.client.backgroundTask.LogoutTask;
-import edu.byu.cs.tweeter.client.backgroundTask.RegisterTask;
+import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.LogoutTask;
+import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatePkg.RegisterTask;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.util.FakeData;
 import edu.byu.cs.tweeter.util.Pair;
 
 /**
@@ -238,24 +236,19 @@ public class UserService {
         }
 
         @Override
-        protected void runTask() {
-            try {
-                Pair<User, AuthToken> loginResult = doLogin();
+        protected void processTask() {
 
-                this.user = loginResult.getFirst();
-                this.authToken = loginResult.getSecond();
+            Pair<User, AuthToken> loginResult = doLogin();
 
-                sendSuccessMessage();
-            } catch (Exception ex) {
-                Log.e(LOG_TAG, ex.getMessage(), ex);
-                sendExceptionMessage(ex);
-            }
+            this.user = loginResult.getFirst();
+            this.authToken = loginResult.getSecond();
+
         }
 
         // This method is public so it can be accessed by test cases
-        public FakeData getFakeData() {
-            return new FakeData();
-        }
+//        public FakeData getFakeData() {
+//            return new FakeData();
+//        }
 
         // This method is public so it can be accessed by test cases
         public Pair<User, AuthToken> doLogin() {
