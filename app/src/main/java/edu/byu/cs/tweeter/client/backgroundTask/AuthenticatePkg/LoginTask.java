@@ -17,25 +17,4 @@ public class LoginTask extends AuthenticateTask {
 
     }
 
-//    @Override
-//    protected void processTask() {
-//        Pair<User, AuthToken> loginResult = doLogin();
-//
-//        loggedInUser = loginResult.getFirst();
-//        authToken = loginResult.getSecond();
-//    }
-
-
-//    private Pair<User, AuthToken> doLogin() {
-//        loggedInUser = getFakeData().getFirstUser();
-//        authToken = getFakeData().getAuthToken();
-//        return new Pair<>(loggedInUser, authToken);
-//    }
-//
-//
-//    @Override
-//    protected void loadSuccessBundle(Bundle msgBundle) {
-//        msgBundle.putSerializable(USER_KEY, loggedInUser);
-//        msgBundle.putSerializable(AUTH_TOKEN_KEY, authToken);
-//    }
 }
