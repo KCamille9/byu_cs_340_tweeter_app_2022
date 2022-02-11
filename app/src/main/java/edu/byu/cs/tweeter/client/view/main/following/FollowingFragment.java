@@ -24,14 +24,15 @@ import java.util.List;
 
 import edu.byu.cs.client.R;
 import edu.byu.cs.tweeter.client.cache.Cache;
-import edu.byu.cs.tweeter.client.view.main.presenter.FollowingPresenter;
+import edu.byu.cs.tweeter.client.view.main.presenter.Paged.FollowingPresenter;
+import edu.byu.cs.tweeter.client.view.main.presenter.Paged.PagedView;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
 /**
  * Implements the "Following" tab.
  */
-public class FollowingFragment extends Fragment implements FollowingPresenter.View {
+public class FollowingFragment extends Fragment implements PagedView<User> {
 
     private static final String LOG_TAG = "FollowingFragment";
     private static final String USER_KEY = "UserKey";
@@ -79,6 +80,11 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
     @Override
     public void addItems(List<User> newUsers) {
         followingRecyclerViewAdapter.addItems(newUsers);
+    }
+
+    @Override
+    public void navigateToUser(User user) {
+
     }
 
     /**

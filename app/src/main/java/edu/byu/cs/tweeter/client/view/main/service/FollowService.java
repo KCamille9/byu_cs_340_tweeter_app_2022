@@ -1,14 +1,5 @@
 package edu.byu.cs.tweeter.client.view.main.service;
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-
-import androidx.annotation.NonNull;
-
-import java.io.Serializable;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,12 +17,14 @@ import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.PagedTasks.GetF
 import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.CountTasks.GetFollowingCountTask;
 import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.IsFollowerTask;
 import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.PagedTasks.GetFollowingTask;
-import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.PagedTasks.PagedTask;
 import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.UnfollowTask;
+//import edu.byu.cs.tweeter.client.view.main.presenter.FollowPresenter;
+import edu.byu.cs.tweeter.client.view.main.presenter.Paged.FollowersPresenter;
+import edu.byu.cs.tweeter.client.view.main.presenter.Paged.FollowingPresenter;
+import edu.byu.cs.tweeter.client.view.main.presenter.MainActivityPresenter;
+//import edu.byu.cs.tweeter.client.view.main.presenter.UnFollowPresenter;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.util.FakeData;
-import edu.byu.cs.tweeter.util.Pair;
 
 public class FollowService {
 
@@ -47,8 +40,8 @@ public class FollowService {
 
     }
 
-    public interface FollowObserver extends SimpleNotificationObserver {
-    }
+//    public interface FollowObserver extends SimpleNotificationObserver {
+//    }
 
     public interface UnFollowObserver extends SimpleNotificationObserver{
 
@@ -58,9 +51,9 @@ public class FollowService {
 
     }
 
-    public interface GetFollowersCountObserver extends CountNotificationObserver{
-
-    }
+//    public interface GetFollowersCountObserver extends CountNotificationObserver{
+//
+//    }
 
     public interface GetFollowingCountObserver extends CountNotificationObserver {
 
@@ -77,13 +70,13 @@ public class FollowService {
      * Limits the number of followees returned and returns the next set of
      * followees after any that were returned in a previous request.
      * This is an asynchronous operation.
-     *
-     * @param authToken the session auth token.
+     *  @param authToken the session auth token.
      * @param targetUser the user for whom followees are being retrieved.
      * @param limit the maximum number of followees to return.
      * @param lastFollowee the last followee returned in the previous request (can be null).
+     * @param observer
      */
-    public void getFollowees(AuthToken authToken, User targetUser, int limit, User lastFollowee, GetFollowingObserver observer) {
+    public void getFollowees(AuthToken authToken, User targetUser, int limit, User lastFollowee, FollowingPresenter.FollowingObserver observer) {
         GetFollowingTask followingTask = getGetFollowingTask(authToken, targetUser, limit, lastFollowee, observer);
         BackgroundTaskUtils.runTask(followingTask);
     }
@@ -96,13 +89,13 @@ public class FollowService {
      * @return the instance.
      */
     // This method is public so it can be accessed by test cases
-    public GetFollowingTask getGetFollowingTask(AuthToken authToken, User targetUser, int limit, User lastFollowee, GetFollowingObserver observer) {
+    public GetFollowingTask getGetFollowingTask(AuthToken authToken, User targetUser, int limit, User lastFollowee, FollowingPresenter.FollowingObserver observer) {
         return new GetFollowingTask(authToken, targetUser, limit, lastFollowee, new PagedNotificationHandler<User>(observer));
     }
 
 
 
-    public void getFollowers(AuthToken currUserAuthToken, User user, int pageSize, User lastFollower, GetFollowersObserver getFollowersObserver) {
+    public void getFollowers(AuthToken currUserAuthToken, User user, int pageSize, User lastFollower, FollowersPresenter.GetFollowersObserver getFollowersObserver) {
         GetFollowersTask getFollowersTask = new GetFollowersTask(currUserAuthToken,
                 user, pageSize, lastFollower, new PagedNotificationHandler<User>(getFollowersObserver));
 
@@ -110,14 +103,14 @@ public class FollowService {
     }
 
 
-    public void GetFollowTask(AuthToken currUserAuthToken, User user, FollowObserver followObserver) {
+    public void GetFollowTask(AuthToken currUserAuthToken, User user, MainActivityPresenter.FollowPresenter.FollowObserver followObserver) {
         FollowTask followTask = new FollowTask(currUserAuthToken,
                 user, new SimpleNotificationHandler(followObserver));
 
         BackgroundTaskUtils.runTask(followTask);
     }
 
-    public void GetUnFollowTask(AuthToken currUserAuthToken, User user, UnFollowObserver unFollowObserver) {
+    public void GetUnFollowTask(AuthToken currUserAuthToken, User user, MainActivityPresenter.UnFollowPresenter.UnFollowObserver unFollowObserver) {
         UnfollowTask unfollowTask = new UnfollowTask(currUserAuthToken,
                 user, new SimpleNotificationHandler(unFollowObserver));
 
@@ -131,7 +124,7 @@ public class FollowService {
         BackgroundTaskUtils.runTask(isFollowerTask);
     }
 
-    public void GetGetFollowersCountTask(AuthToken currUserAuthToken, User user, GetFollowersCountObserver getFollowersCountObserver) {
+    public void GetGetFollowersCountTask(AuthToken currUserAuthToken, User user, MainActivityPresenter.GetFollowersCountPresenter.GetFollowersCountObserver getFollowersCountObserver) {
         ExecutorService executor = Executors.newFixedThreadPool(2);
 
         // Get count of most recently selected user's followers.
@@ -141,7 +134,7 @@ public class FollowService {
     }
 
 
-    public void GetGetFollowingCountTask(AuthToken currUserAuthToken, User user, GetFollowingCountObserver getFollowingCountObserver) {
+    public void GetGetFollowingCountTask(AuthToken currUserAuthToken, User user, MainActivityPresenter.GetFollowingCountPresenter.GetFolloweesCountObserver getFollowingCountObserver) {
         ExecutorService executor = Executors.newFixedThreadPool(2);
 
         GetFollowingCountTask followingCountTask = new GetFollowingCountTask(currUserAuthToken,

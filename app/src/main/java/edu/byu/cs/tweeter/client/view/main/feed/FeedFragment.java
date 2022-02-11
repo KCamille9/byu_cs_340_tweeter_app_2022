@@ -32,14 +32,15 @@ import java.util.List;
 
 import edu.byu.cs.client.R;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
-import edu.byu.cs.tweeter.client.view.main.presenter.FeedPresenter;
+import edu.byu.cs.tweeter.client.view.main.presenter.Paged.FeedPresenter;
+import edu.byu.cs.tweeter.client.view.main.presenter.Paged.PagedView;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
 /**
  * Implements the "Feed" tab.
  */
-public class FeedFragment extends Fragment implements FeedPresenter.View {
+public class FeedFragment extends Fragment implements PagedView<Status> {
 
     private static final String LOG_TAG = "FeedFragment";
     private static final String USER_KEY = "UserKey";
@@ -92,7 +93,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.View {
         feedRecyclerViewAdapter = new FeedRecyclerViewAdapter();
         feedRecyclerView.setAdapter(feedRecyclerViewAdapter);
 
-        presenter.loadMoreItems(user);
+        presenter.loadMoreItems();
 
 
         feedRecyclerView.addOnScrollListener(new FeedRecyclerViewPaginationScrollListener(layoutManager));
@@ -106,21 +107,10 @@ public class FeedFragment extends Fragment implements FeedPresenter.View {
         Toast.makeText(getContext(),  message, Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void handleSuccessIntent(User user) {
-        Intent intent = new Intent(getContext(), MainActivity.class);
-        intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
-        startActivity(intent);
-    }
 
     @Override
-    public void addItems(List<Status> newStatus, boolean hasMorePages) {
-        feedRecyclerViewAdapter.addItems(newStatus);
-    }
-
-    @Override
-    public void setLoadingFooter(boolean value) {
-        if(value)
+    public void setLoading(boolean isLoading) {
+        if(isLoading)
         {
             feedRecyclerViewAdapter.addLoadingFooter();
         }
@@ -128,6 +118,18 @@ public class FeedFragment extends Fragment implements FeedPresenter.View {
         {
             feedRecyclerViewAdapter.removeLoadingFooter();
         }
+    }
+
+    @Override
+    public void addItems(List<Status> items) {
+        feedRecyclerViewAdapter.addItems(items);
+    }
+
+    @Override
+    public void navigateToUser(User user) {
+        Intent intent = new Intent(getContext(), MainActivity.class);
+        intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
+        startActivity(intent);
     }
 
     /**
@@ -403,13 +405,13 @@ public class FeedFragment extends Fragment implements FeedPresenter.View {
             int totalItemCount = layoutManager.getItemCount();
             int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
-            if (!presenter.isLoading() && presenter.hasMorePages()) {
+            if (!presenter.isLoading() && presenter.isHasMorePages()) {
                 if ((visibleItemCount + firstVisibleItemPosition) >=
                         totalItemCount && firstVisibleItemPosition >= 0) {
                     // Run this code later on the UI thread
                     final Handler handler = new Handler(Looper.getMainLooper());
                     handler.postDelayed(() -> {
-                        presenter.loadMoreItems(user);
+                        presenter.loadMoreItems();
                     }, 0);
                 }
             }

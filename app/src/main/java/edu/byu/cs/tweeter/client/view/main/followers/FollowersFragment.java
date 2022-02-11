@@ -31,13 +31,14 @@ import edu.byu.cs.client.R;
 import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.GetUserTask;
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
-import edu.byu.cs.tweeter.client.view.main.presenter.FollowersPresenter;
+import edu.byu.cs.tweeter.client.view.main.presenter.Paged.FollowersPresenter;
+import edu.byu.cs.tweeter.client.view.main.presenter.Paged.PagedView;
 import edu.byu.cs.tweeter.model.domain.User;
 
 /**
  * Implements the "Followers" tab.
  */
-public class FollowersFragment extends Fragment implements FollowersPresenter.View {
+public class FollowersFragment extends Fragment implements PagedView<User> {
 
     private static final String LOG_TAG = "FollowersFragment";
     private static final String USER_KEY = "UserKey";
@@ -90,7 +91,7 @@ public class FollowersFragment extends Fragment implements FollowersPresenter.Vi
         followersRecyclerView.addOnScrollListener(new FollowRecyclerViewPaginationScrollListener(layoutManager));
 
         presenter = new FollowersPresenter(this);
-        presenter.loadMoreItems(user);
+        presenter.loadMoreItems();
 
         return view;
     }
@@ -101,21 +102,26 @@ public class FollowersFragment extends Fragment implements FollowersPresenter.Vi
 
     }
 
+
     @Override
-    public void setLoadingStatus(boolean value) {
-        if(value)
+    public void setLoading(boolean isLoading) {
+        if(isLoading)
         {
             followersRecyclerViewAdapter.addLoadingFooter();
         }
         else {
             followersRecyclerViewAdapter.removeLoadingFooter();
         }
-
     }
 
     @Override
-    public void addFollowers(List<User> followers) {
-        followersRecyclerViewAdapter.addItems(followers);
+    public void addItems(List<User> items) {
+        followersRecyclerViewAdapter.addItems(items);
+    }
+
+    @Override
+    public void navigateToUser(User user) {
+
     }
 
     /**
@@ -299,7 +305,7 @@ public class FollowersFragment extends Fragment implements FollowersPresenter.Vi
          */
         void loadMoreItems() {
 
-            presenter.loadMoreItems(user);
+            presenter.loadMoreItems();
         }
 
         /**

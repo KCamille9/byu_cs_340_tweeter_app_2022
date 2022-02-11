@@ -32,14 +32,15 @@ import java.util.List;
 
 import edu.byu.cs.client.R;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
-import edu.byu.cs.tweeter.client.view.main.presenter.StoryPresenter;
+import edu.byu.cs.tweeter.client.view.main.presenter.Paged.PagedView;
+import edu.byu.cs.tweeter.client.view.main.presenter.Paged.StoryPresenter;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
 /**
  * Implements the "Story" tab.
  */
-public class StoryFragment extends Fragment implements StoryPresenter.View {
+public class StoryFragment extends Fragment implements PagedView<Status> {
     private static final String LOG_TAG = "StoryFragment";
     private static final String USER_KEY = "UserKey";
 
@@ -73,6 +74,7 @@ public class StoryFragment extends Fragment implements StoryPresenter.View {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_story, container, false);
 
         //noinspection ConstantConditions
@@ -90,7 +92,7 @@ public class StoryFragment extends Fragment implements StoryPresenter.View {
 
         storyRecyclerView.addOnScrollListener(new StoryRecyclerViewPaginationScrollListener(layoutManager));
 
-        presenter.loadMoreItems(user);
+        presenter.loadMoreItems();
 
         return view;
     }
@@ -100,27 +102,44 @@ public class StoryFragment extends Fragment implements StoryPresenter.View {
         Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void handleSuccessIntent(User user) {
-        Intent intent = new Intent(getContext(), MainActivity.class);
-        intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
-        startActivity(intent);
-    }
+//    @Override
+//    public void handleSuccessIntent(User user) {
+//        Intent intent = new Intent(getContext(), MainActivity.class);
+//        intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
+//        startActivity(intent);
+//    }
+
+//    @Override
+//    public void addItems(List<Status> newStatus, boolean hasMorePages) {
+//        storyRecyclerViewAdapter.addItems(newStatus);
+//    }
+
+//    @Override
+//    public void setLoadingFooter(boolean value) {
+//
+//    }
 
     @Override
-    public void addItems(List<Status> newStatus, boolean hasMorePages) {
-        storyRecyclerViewAdapter.addItems(newStatus);
-    }
-
-    @Override
-    public void setLoadingFooter(boolean value) {
-        if(value)
+    public void setLoading(boolean isLoading) {
+        if(isLoading)
         {
             storyRecyclerViewAdapter.addLoadingFooter();
         }
         else {
             storyRecyclerViewAdapter.removeLoadingFooter();
         }
+    }
+
+    @Override
+    public void addItems(List<Status> items) {
+        storyRecyclerViewAdapter.addItems(items);
+    }
+
+    @Override
+    public void navigateToUser(User user) {
+        Intent intent = new Intent(getContext(), MainActivity.class);
+        intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
+        startActivity(intent);
     }
 
     /**
@@ -398,13 +417,13 @@ public class StoryFragment extends Fragment implements StoryPresenter.View {
             int totalItemCount = layoutManager.getItemCount();
             int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
-            if (!presenter.isLoading() && presenter.hasMorePages()) {
+            if (!presenter.isLoading() && presenter.isHasMorePages()) {
                 if ((visibleItemCount + firstVisibleItemPosition) >=
                         totalItemCount && firstVisibleItemPosition >= 0) {
                     // Run this code later on the UI thread
                     final Handler handler = new Handler(Looper.getMainLooper());
                     handler.postDelayed(() -> {
-                        presenter.loadMoreItems(user);
+                        presenter.loadMoreItems();
                     }, 0);
                 }
             }

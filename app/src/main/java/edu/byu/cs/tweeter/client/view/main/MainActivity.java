@@ -23,6 +23,7 @@ import edu.byu.cs.client.R;
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.view.login.LoginActivity;
 import edu.byu.cs.tweeter.client.view.login.StatusDialogFragment;
+//import edu.byu.cs.tweeter.client.view.main.presenter.FollowCount.FollowCountPresenter;
 import edu.byu.cs.tweeter.client.view.main.presenter.MainActivityPresenter;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -45,6 +46,12 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
 
     private MainActivityPresenter presenter;
 
+    private MainActivityPresenter.FollowPresenter followPresenter;
+    private MainActivityPresenter.UnFollowPresenter unFollowPresenter;
+    MainActivityPresenter.GetFollowersCountPresenter getFollowersCountPresenter;
+    private MainActivityPresenter.GetFollowingCountPresenter getFollowingCountPresenter;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
 
 
         presenter = new MainActivityPresenter(this);
+
 
 
         selectedUser = (User) getIntent().getSerializableExtra(CURRENT_USER_KEY);
@@ -115,12 +123,12 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
 
                 if (followButton.getText().toString().equals(v.getContext().getString(R.string.following))) {
 
-                    presenter.executeUnfollowTask(selectedUser);
+                    followPresenter.executeTask(selectedUser);
 
                     Toast.makeText(MainActivity.this, "Removing " + selectedUser.getName() + "...", Toast.LENGTH_LONG).show();
                 } else {
 
-                    presenter.executeFollowTask(selectedUser);
+                    unFollowPresenter.executeTask(selectedUser);
 
                     Toast.makeText(MainActivity.this, "Adding " + selectedUser.getName() + "...", Toast.LENGTH_LONG).show();
                 }
@@ -183,9 +191,9 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
 
     public void updateSelectedUserFollowingAndFollowers() {
 
-        presenter.executeGetFollowersCountTask(selectedUser);
+        getFollowersCountPresenter.executeTask(selectedUser);
 
-        presenter.executeGetFollowingCountTask(selectedUser);
+        getFollowingCountPresenter.executeTask(selectedUser);
     }
 
     public void updateFollowButton(boolean removed) {

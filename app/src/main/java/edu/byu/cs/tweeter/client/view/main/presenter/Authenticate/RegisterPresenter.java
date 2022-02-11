@@ -1,41 +1,31 @@
-package edu.byu.cs.tweeter.client.view.main.presenter;
+package edu.byu.cs.tweeter.client.view.main.presenter.Authenticate;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;
 
-import edu.byu.cs.tweeter.client.cache.Cache;
+import edu.byu.cs.tweeter.client.view.main.presenter.Authenticate.AuthenticatePresenter;
+import edu.byu.cs.tweeter.client.view.main.presenter.Authenticate.AuthenticateView;
 import edu.byu.cs.tweeter.client.view.main.service.UserService;
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.User;
 
-public class RegisterPresenter implements UserService.RegisterObserver {
+public class RegisterPresenter extends AuthenticatePresenter {
 
     private static final String LOG_TAG = "RegisterFragment";
 
-    private final View view;
 
-    /**
-     * The interface by which this presenter communicates with it's view.
-     */
-    public interface View {
-        void registerSuccessful(User user, AuthToken authToken);
-        void registerUnsuccessful(String message);
-    }
 
     /**
      * Creates an instance.
      *
      * @param view the view for which this class is the presenter.
      */
-    public RegisterPresenter(View view) {
+    public RegisterPresenter(AuthenticateView view) {
+        super(view);
         // An assertion would be better, but Android doesn't support Java assertions
         if(view == null) {
             throw new NullPointerException();
         }
-        this.view = view;
     }
 
     public void validateRegistration(String firstName, String lastName, String alias,
@@ -83,30 +73,15 @@ public class RegisterPresenter implements UserService.RegisterObserver {
         String imageBytesBase64 = Base64.getEncoder().encodeToString(imageBytes);
 
         UserService userService = new UserService();
-        userService.register(firstName, lastName, username, password, imageBytesBase64, this);
+        userService.register(firstName, lastName, username, password, imageBytesBase64, new RegisterObserver());
     }
 
-    @Override
-    public void handleSuccess(User user, AuthToken authToken) {
+    public class RegisterObserver extends AuthenticateObserver
+    {
 
-        Cache.getInstance().setCurrUser(user);
-        Cache.getInstance().setCurrUserAuthToken(authToken);
-
-        view.registerSuccessful(user, authToken);
-
-    }
-
-    @Override
-    public void handleFailure(String message) {
-        String errorMessage = "Failed to register: " + message;
-        Log.e(LOG_TAG, errorMessage);
-        view.registerUnsuccessful(errorMessage);
-    }
-
-    @Override
-    public void handleException(Exception exception) {
-        String errorMessage = "Failed to register because of exception: " + exception.getMessage();
-        Log.e(LOG_TAG, errorMessage, exception);
-        view.registerUnsuccessful(errorMessage);
+        @Override
+        public String getDescription() {
+            return "register";
+        }
     }
 }

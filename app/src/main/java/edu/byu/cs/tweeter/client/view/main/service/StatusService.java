@@ -1,14 +1,5 @@
 package edu.byu.cs.tweeter.client.view.main.service;
 
-import android.os.Handler;
-import android.os.Message;
-
-import androidx.annotation.NonNull;
-
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import edu.byu.cs.tweeter.client.Handlers.PagedNotificationHandler;
 import edu.byu.cs.tweeter.client.Handlers.SimpleNotificationHandler;
 import edu.byu.cs.tweeter.client.Handlers.UserNotificationHandler;
@@ -18,8 +9,8 @@ import edu.byu.cs.tweeter.client.Observers.UserNotificationObserver;
 import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.PagedTasks.GetFeedTask;
 import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.PagedTasks.GetStoryTask;
 import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.GetUserTask;
-import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.PagedTasks.PagedTask;
 import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.PostStatusTask;
+import edu.byu.cs.tweeter.client.view.main.presenter.Paged.PagedPresenter;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -52,7 +43,8 @@ public class StatusService {
         BackgroundTaskUtils.runTask(getUserTask);
     }
 
-    public void getStory(AuthToken currUserAuthToken, User user, int pageSize, Status lastStatus, GetStoryObserver getStoryObserver) {
+    public void getStory(AuthToken currUserAuthToken, User user, int pageSize, Status lastStatus,
+                         PagedPresenter.GetItemsObserver getStoryObserver) {
         GetStoryTask getStoryTask = new GetStoryTask(currUserAuthToken,
                 user, pageSize, lastStatus, new PagedNotificationHandler<Status>(getStoryObserver));
 

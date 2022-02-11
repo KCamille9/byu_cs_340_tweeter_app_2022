@@ -14,14 +14,14 @@ import androidx.fragment.app.Fragment;
 
 import edu.byu.cs.client.R;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
-import edu.byu.cs.tweeter.client.view.main.presenter.LoginPresenter;
-import edu.byu.cs.tweeter.model.domain.AuthToken;
+import edu.byu.cs.tweeter.client.view.main.presenter.Authenticate.AuthenticateView;
+import edu.byu.cs.tweeter.client.view.main.presenter.Authenticate.LoginPresenter;
 import edu.byu.cs.tweeter.model.domain.User;
 
 /**
  * Implements the login screen.
  */
-public class LoginFragment extends Fragment implements LoginPresenter.View {
+public class LoginFragment extends Fragment implements AuthenticateView {
     private static final String LOG_TAG = "LoginFragment";
 
     private Toast loginInToast;
@@ -82,7 +82,7 @@ public class LoginFragment extends Fragment implements LoginPresenter.View {
 
 
     @Override
-    public void loginSuccessful(User user, AuthToken authToken) {
+    public void authenticateSuccessful(User user) {
         Intent intent = new Intent(getContext(), MainActivity.class);
         intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
 
@@ -93,8 +93,7 @@ public class LoginFragment extends Fragment implements LoginPresenter.View {
     }
 
     @Override
-    public void loginUnsuccessful(String message) {
+    public void displayErrorMessage(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
-
 }
