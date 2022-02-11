@@ -281,48 +281,50 @@ public class MainActivityPresenter {
         }
     }
 
-    public class GetFollowersCountPresenter extends FollowCountPresenter {
+//    public class GetFollowersCountPresenter extends FollowCountPresenter {
+//
+//        FollowService followServiceCount;
+//
+//        public GetFollowersCountPresenter(FollowCountView baseView) {
+//            super(baseView);
+//            this.followServiceCount = new FollowService();
+//        }
+//
+////        @Override
+//        public void executeTask(User targetUser) {
+//
+//            this.followServiceCount.GetGetFollowersCountTask(Cache.getInstance().getCurrUserAuthToken(), targetUser,
+//                    new GetFollowersCountObserver());
+//        }
+//
+//        public  class GetFollowersCountObserver extends FollowCountObserver {
+//
+//            @Override
+//            public String getDescription() {
+//                return "followers count";
+//            }
+//        }
+//    }
 
-
-        public GetFollowersCountPresenter(FollowCountView baseView) {
-            super(baseView);
-        }
-
-//        @Override
-        public void executeTask(User targetUser) {
-
-            followService.GetGetFollowersCountTask(Cache.getInstance().getCurrUserAuthToken(), targetUser,
-                    new GetFollowersCountObserver());
-        }
-
-        public  class GetFollowersCountObserver extends FollowCountObserver {
-
-            @Override
-            public String getDescription() {
-                return "followers count";
-            }
-        }
-    }
-
-    public class GetFollowingCountPresenter extends FollowCountPresenter {
-
-
-        public GetFollowingCountPresenter(BaseView baseView) {
-            super(baseView);
-        }
-
-//        @Override
-        public void executeTask(User targetUser) {
-            followService.GetGetFollowingCountTask(Cache.getInstance().getCurrUserAuthToken(),
-                    targetUser, new GetFolloweesCountObserver());
-        }
-
-        public  class GetFolloweesCountObserver extends FollowCountObserver {
-
-            @Override
-            public String getDescription() {
-                return "followees count";
-            }
-        }
-    }
+//    public class GetFollowingCountPresenter extends FollowCountPresenter {
+//
+//
+//        public GetFollowingCountPresenter(BaseView baseView) {
+//            super(baseView);
+//        }
+//
+////        @Override
+//        public void executeTask(User targetUser) {
+//            followService.GetGetFollowingCountTask(Cache.getInstance().getCurrUserAuthToken(),
+//                    targetUser, new GetFolloweesCountObserver());
+//        }
+//
+//        public  class GetFolloweesCountObserver extends FollowCountObserver {
+//
+//            @Override
+//            public String getDescription() {
+//                return "followees count";
+//            }
+//        }
+//    }
 }

@@ -25,13 +25,16 @@ import edu.byu.cs.tweeter.client.view.login.LoginActivity;
 import edu.byu.cs.tweeter.client.view.login.StatusDialogFragment;
 //import edu.byu.cs.tweeter.client.view.main.presenter.FollowCount.FollowCountPresenter;
 import edu.byu.cs.tweeter.client.view.main.presenter.MainActivityPresenter;
+import edu.byu.cs.tweeter.client.view.main.presenter.MainStuff.FollowCount.FollowCountView;
+import edu.byu.cs.tweeter.client.view.main.presenter.MainStuff.FollowCount.GetFollowersCountPresenter;
+import edu.byu.cs.tweeter.client.view.main.presenter.MainStuff.FollowCount.GetFollowingCountPresenter;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
 /**
  * The main activity for the application. Contains tabs for feed, story, following, and followers.
  */
-public class MainActivity extends AppCompatActivity implements StatusDialogFragment.Observer, MainActivityPresenter.View {
+public class MainActivity extends AppCompatActivity implements StatusDialogFragment.Observer, MainActivityPresenter.View, FollowCountView {
 
     private static final String LOG_TAG = "MainActivity";
 
@@ -48,8 +51,8 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
 
     private MainActivityPresenter.FollowPresenter followPresenter;
     private MainActivityPresenter.UnFollowPresenter unFollowPresenter;
-    MainActivityPresenter.GetFollowersCountPresenter getFollowersCountPresenter;
-    private MainActivityPresenter.GetFollowingCountPresenter getFollowingCountPresenter;
+    private GetFollowersCountPresenter getFollowersCountPresenter;
+    private GetFollowingCountPresenter getFollowingCountPresenter;
 
 
 
@@ -60,6 +63,9 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
 
 
         presenter = new MainActivityPresenter(this);
+
+        getFollowersCountPresenter = new GetFollowersCountPresenter(this);
+        getFollowingCountPresenter = new GetFollowingCountPresenter(this);
 
 
 
@@ -191,9 +197,9 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
 
     public void updateSelectedUserFollowingAndFollowers() {
 
-        getFollowersCountPresenter.executeTask(selectedUser);
+        getFollowersCountPresenter.proceedTask(selectedUser);
 
-        getFollowingCountPresenter.executeTask(selectedUser);
+        getFollowingCountPresenter.proceedTask(selectedUser);
     }
 
     public void updateFollowButton(boolean removed) {
@@ -217,6 +223,11 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
     public void logoutUserPresenter() {
         logOutToast.cancel();
         logoutUser();
+    }
+
+    @Override
+    public void countSuccessful(int count) {
+        followerCount.setText(getString(R.string.followerCount, String.valueOf(count)));
     }
 
     @Override

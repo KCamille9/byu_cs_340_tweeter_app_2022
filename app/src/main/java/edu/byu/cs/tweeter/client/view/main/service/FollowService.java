@@ -19,6 +19,8 @@ import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.IsFollowerTask;
 import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.PagedTasks.GetFollowingTask;
 import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.UnfollowTask;
 //import edu.byu.cs.tweeter.client.view.main.presenter.FollowPresenter;
+import edu.byu.cs.tweeter.client.view.main.presenter.MainStuff.FollowCount.GetFollowersCountPresenter;
+import edu.byu.cs.tweeter.client.view.main.presenter.MainStuff.FollowCount.GetFollowingCountPresenter;
 import edu.byu.cs.tweeter.client.view.main.presenter.Paged.FollowersPresenter;
 import edu.byu.cs.tweeter.client.view.main.presenter.Paged.FollowingPresenter;
 import edu.byu.cs.tweeter.client.view.main.presenter.MainActivityPresenter;
@@ -124,7 +126,7 @@ public class FollowService {
         BackgroundTaskUtils.runTask(isFollowerTask);
     }
 
-    public void GetGetFollowersCountTask(AuthToken currUserAuthToken, User user, MainActivityPresenter.GetFollowersCountPresenter.GetFollowersCountObserver getFollowersCountObserver) {
+    public void GetGetFollowersCountTask(AuthToken currUserAuthToken, User user, GetFollowersCountPresenter.GetFollowersCountObserver getFollowersCountObserver) {
         ExecutorService executor = Executors.newFixedThreadPool(2);
 
         // Get count of most recently selected user's followers.
@@ -134,7 +136,7 @@ public class FollowService {
     }
 
 
-    public void GetGetFollowingCountTask(AuthToken currUserAuthToken, User user, MainActivityPresenter.GetFollowingCountPresenter.GetFolloweesCountObserver getFollowingCountObserver) {
+    public void GetGetFollowingCountTask(AuthToken currUserAuthToken, User user, GetFollowingCountPresenter.GetFolloweesCountObserver getFollowingCountObserver) {
         ExecutorService executor = Executors.newFixedThreadPool(2);
 
         GetFollowingCountTask followingCountTask = new GetFollowingCountTask(currUserAuthToken,
