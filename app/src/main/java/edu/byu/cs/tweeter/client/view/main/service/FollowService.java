@@ -21,6 +21,8 @@ import edu.byu.cs.tweeter.client.backgroundTask.AuthenticatedPkg.UnfollowTask;
 //import edu.byu.cs.tweeter.client.view.main.presenter.FollowPresenter;
 import edu.byu.cs.tweeter.client.view.main.presenter.MainStuff.FollowCount.GetFollowersCountPresenter;
 import edu.byu.cs.tweeter.client.view.main.presenter.MainStuff.FollowCount.GetFollowingCountPresenter;
+import edu.byu.cs.tweeter.client.view.main.presenter.MainStuff.FollowState.FollowPresenter;
+import edu.byu.cs.tweeter.client.view.main.presenter.MainStuff.FollowState.UnFollowPresenter;
 import edu.byu.cs.tweeter.client.view.main.presenter.Paged.FollowersPresenter;
 import edu.byu.cs.tweeter.client.view.main.presenter.Paged.FollowingPresenter;
 import edu.byu.cs.tweeter.client.view.main.presenter.MainActivityPresenter;
@@ -105,14 +107,14 @@ public class FollowService {
     }
 
 
-    public void GetFollowTask(AuthToken currUserAuthToken, User user, MainActivityPresenter.FollowPresenter.FollowObserver followObserver) {
+    public void GetFollowTask(AuthToken currUserAuthToken, User user, FollowPresenter.FollowObserver followObserver) {
         FollowTask followTask = new FollowTask(currUserAuthToken,
                 user, new SimpleNotificationHandler(followObserver));
 
         BackgroundTaskUtils.runTask(followTask);
     }
 
-    public void GetUnFollowTask(AuthToken currUserAuthToken, User user, MainActivityPresenter.UnFollowPresenter.UnFollowObserver unFollowObserver) {
+    public void GetUnFollowTask(AuthToken currUserAuthToken, User user, UnFollowPresenter.UnFollowObserver unFollowObserver) {
         UnfollowTask unfollowTask = new UnfollowTask(currUserAuthToken,
                 user, new SimpleNotificationHandler(unFollowObserver));
 

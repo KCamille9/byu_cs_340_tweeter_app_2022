@@ -28,13 +28,17 @@ import edu.byu.cs.tweeter.client.view.main.presenter.MainActivityPresenter;
 import edu.byu.cs.tweeter.client.view.main.presenter.MainStuff.FollowCount.FollowCountView;
 import edu.byu.cs.tweeter.client.view.main.presenter.MainStuff.FollowCount.GetFollowersCountPresenter;
 import edu.byu.cs.tweeter.client.view.main.presenter.MainStuff.FollowCount.GetFollowingCountPresenter;
+import edu.byu.cs.tweeter.client.view.main.presenter.MainStuff.FollowState.FollowPresenter;
+import edu.byu.cs.tweeter.client.view.main.presenter.MainStuff.FollowState.FollowStateView;
+import edu.byu.cs.tweeter.client.view.main.presenter.MainStuff.FollowState.UnFollowPresenter;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
 /**
  * The main activity for the application. Contains tabs for feed, story, following, and followers.
  */
-public class MainActivity extends AppCompatActivity implements StatusDialogFragment.Observer, MainActivityPresenter.View, FollowCountView {
+public class MainActivity extends AppCompatActivity implements StatusDialogFragment.Observer,
+        MainActivityPresenter.View, FollowCountView, FollowStateView {
 
     private static final String LOG_TAG = "MainActivity";
 
@@ -49,8 +53,8 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
 
     private MainActivityPresenter presenter;
 
-    private MainActivityPresenter.FollowPresenter followPresenter;
-    private MainActivityPresenter.UnFollowPresenter unFollowPresenter;
+    private FollowPresenter followPresenter;
+    private UnFollowPresenter unFollowPresenter;
     private GetFollowersCountPresenter getFollowersCountPresenter;
     private GetFollowingCountPresenter getFollowingCountPresenter;
 
@@ -66,10 +70,11 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
 
         getFollowersCountPresenter = new GetFollowersCountPresenter(this);
         getFollowingCountPresenter = new GetFollowingCountPresenter(this);
-
-
+        followPresenter = new FollowPresenter(this);
+        unFollowPresenter = new UnFollowPresenter(this);
 
         selectedUser = (User) getIntent().getSerializableExtra(CURRENT_USER_KEY);
+
         if (selectedUser == null) {
             throw new RuntimeException("User not passed to activity");
         }

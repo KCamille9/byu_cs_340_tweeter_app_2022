@@ -65,6 +65,8 @@ public class MainActivityPresenter {
         statusService = new StatusService();
     }
 
+    // Helper functions
+
     public String getFormattedDateTime() throws ParseException {
         SimpleDateFormat userFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         SimpleDateFormat statusFormat = new SimpleDateFormat("MMM d yyyy h:mm aaa");
@@ -130,6 +132,8 @@ public class MainActivityPresenter {
     }
 
 
+    // Execute Tasks
+
     public void executeIsFollowerTask(User user) {
         followService.GetIsFollowerTask(Cache.getInstance().getCurrUserAuthToken(),
                 Cache.getInstance().getCurrUser(), user, new IsFollowerObserver());
@@ -149,62 +153,8 @@ public class MainActivityPresenter {
                 new PostStatusObserver());
     }
 
-//    public void executeGetFollowersCountTask(User user) {
-//
-//        followService.GetGetFollowersCountTask(Cache.getInstance().getCurrUserAuthToken(), user,
-//                new GetFollowersCountObserver());
-//    }
 
-//    public void executeGetFollowingCountTask(User user) {
-//        followService.GetGetFollowingCountTask(Cache.getInstance().getCurrUserAuthToken(),
-//                user, new GetFollowingCountObserver());
-//    }
-
-
-
-    public class FollowPresenter extends FollowStatePresenter {
-
-        public FollowPresenter(FollowStateView baseView) {
-            super(baseView);
-        }
-
-        @Override
-        public void executeTask(User targetUser) {
-            followService.GetFollowTask(Cache.getInstance().getCurrUserAuthToken(), targetUser,new FollowObserver());
-        }
-
-        public  class FollowObserver extends FollowStateObserver {
-
-            @Override
-            public String getDescription() {
-                return "follow";
-            }
-        }
-    }
-
-
-    public class UnFollowPresenter extends FollowStatePresenter {
-
-        private FollowService followService;
-
-        public UnFollowPresenter(FollowStateView baseView) {
-            super(baseView);
-        }
-
-        @Override
-        public void executeTask(User targetUser) {
-            followService.GetUnFollowTask(Cache.getInstance().getCurrUserAuthToken(), targetUser,
-                    new UnFollowObserver());
-        }
-
-        public  class UnFollowObserver extends FollowStateObserver {
-
-            @Override
-            public String getDescription() {
-                return "unfollow";
-            }
-        }
-    }
+    // Observers
 
     private class IsFollowerObserver implements FollowService.IsFollowerObserver {
 
@@ -281,50 +231,5 @@ public class MainActivityPresenter {
         }
     }
 
-//    public class GetFollowersCountPresenter extends FollowCountPresenter {
-//
-//        FollowService followServiceCount;
-//
-//        public GetFollowersCountPresenter(FollowCountView baseView) {
-//            super(baseView);
-//            this.followServiceCount = new FollowService();
-//        }
-//
-////        @Override
-//        public void executeTask(User targetUser) {
-//
-//            this.followServiceCount.GetGetFollowersCountTask(Cache.getInstance().getCurrUserAuthToken(), targetUser,
-//                    new GetFollowersCountObserver());
-//        }
-//
-//        public  class GetFollowersCountObserver extends FollowCountObserver {
-//
-//            @Override
-//            public String getDescription() {
-//                return "followers count";
-//            }
-//        }
-//    }
 
-//    public class GetFollowingCountPresenter extends FollowCountPresenter {
-//
-//
-//        public GetFollowingCountPresenter(BaseView baseView) {
-//            super(baseView);
-//        }
-//
-////        @Override
-//        public void executeTask(User targetUser) {
-//            followService.GetGetFollowingCountTask(Cache.getInstance().getCurrUserAuthToken(),
-//                    targetUser, new GetFolloweesCountObserver());
-//        }
-//
-//        public  class GetFolloweesCountObserver extends FollowCountObserver {
-//
-//            @Override
-//            public String getDescription() {
-//                return "followees count";
-//            }
-//        }
-//    }
 }
