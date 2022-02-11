@@ -14,6 +14,8 @@ public abstract class FollowCountPresenter extends BasePresenter {
         super(baseView);
     }
 
+    protected abstract void proceedTask(User targetUser);
+
     public abstract class FollowCountObserver implements CountNotificationObserver
     {
 

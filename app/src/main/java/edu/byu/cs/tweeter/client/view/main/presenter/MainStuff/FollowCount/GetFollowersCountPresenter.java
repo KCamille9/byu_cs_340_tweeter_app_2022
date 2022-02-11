@@ -15,7 +15,7 @@ public class GetFollowersCountPresenter extends FollowCountPresenter {
         followServiceCount = new FollowService();
     }
 
-//    @Override
+    @Override
     public void proceedTask(User targetUser) {
 
         followServiceCount.GetGetFollowersCountTask(Cache.getInstance().getCurrUserAuthToken(), targetUser,
