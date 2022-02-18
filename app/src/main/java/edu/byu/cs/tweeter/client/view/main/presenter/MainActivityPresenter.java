@@ -62,8 +62,18 @@ public class MainActivityPresenter {
         this.view = view;
         followService = new FollowService();
         userService = new UserService();
-        statusService = new StatusService();
     }
+
+    public StatusService getStatusService()
+    {
+        if(statusService == null)
+        {
+            statusService = new StatusService();
+        }
+
+        return statusService;
+    }
+
 
     // Helper functions
 
@@ -149,7 +159,7 @@ public class MainActivityPresenter {
         Status newStatus = new Status(post, Cache.getInstance().getCurrUser(),
                 getFormattedDateTime(), parseURLs(post), parseMentions(post));
 
-        statusService.GetPostStatusTask(Cache.getInstance().getCurrUserAuthToken(), newStatus,
+        getStatusService().GetPostStatusTask(Cache.getInstance().getCurrUserAuthToken(), newStatus,
                 new PostStatusObserver());
     }
 
@@ -208,7 +218,7 @@ public class MainActivityPresenter {
         }
     }
 
-    private class PostStatusObserver implements StatusService.PostStatusObserver {
+    public class PostStatusObserver implements StatusService.PostStatusObserver {
 
         @Override
         public void handleSuccess() {

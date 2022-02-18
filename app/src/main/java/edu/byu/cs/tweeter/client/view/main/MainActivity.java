@@ -230,10 +230,10 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
         logoutUser();
     }
 
-    @Override
-    public void countSuccessful(int count) {
-        followerCount.setText(getString(R.string.followerCount, String.valueOf(count)));
-    }
+//    @Override
+//    public void countSuccessful(int count) {
+//        followerCount.setText(getString(R.string.followerCount, String.valueOf(count)));
+//    }
 
     @Override
     public void updateFollowerCount(int count) {
